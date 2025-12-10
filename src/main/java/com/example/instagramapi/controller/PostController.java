@@ -4,9 +4,11 @@ import com.example.instagramapi.dto.request.CommentCreateRequest;
 import com.example.instagramapi.dto.request.PostCreateRequest;
 import com.example.instagramapi.dto.response.ApiResponse;
 import com.example.instagramapi.dto.response.CommentResponse;
+import com.example.instagramapi.dto.response.LikeResponse;
 import com.example.instagramapi.dto.response.PostResponse;
 import com.example.instagramapi.security.CustomUserDetails;
 import com.example.instagramapi.service.CommentService;
+import com.example.instagramapi.service.PostLikeService;
 import com.example.instagramapi.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     private final CommentService commentService;
+    private final PostLikeService postLikeService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> create(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -34,8 +37,9 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> findAll() {
-        List<PostResponse> posts = postService.findAll();
+    public ResponseEntity<ApiResponse<List<PostResponse>>> findAll(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails != null ? userDetails.getId() : null;
+        List<PostResponse> posts = postService.findAll(userId);
 
         return ResponseEntity.ok(ApiResponse.success(posts));
     }
@@ -59,7 +63,8 @@ public class PostController {
                                                                      @AuthenticationPrincipal CustomUserDetails userDetails,
                                                                      @Valid @RequestBody CommentCreateRequest request) {
         CommentResponse response = commentService.create(id, userDetails.getId(), request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(response));
     }
 
     @GetMapping("/{id}/username")
@@ -73,6 +78,32 @@ public class PostController {
                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
         commentService.delete(commentId, userDetails.getId());
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<ApiResponse<LikeResponse>> like(@PathVariable Long id,
+                                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
+        LikeResponse response = postLikeService.like(id, userDetails.getId());
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @DeleteMapping("/{id}/like")
+    public ResponseEntity<ApiResponse<LikeResponse>> unlike(@PathVariable Long id,
+                                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        LikeResponse response = postLikeService.unlike(userDetails.getId(),id);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping("/{id}/like")
+    public ResponseEntity<ApiResponse<LikeResponse>> getLikeStatus(@PathVariable Long id,
+                                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails != null ? userDetails.getId() : null;
+        LikeResponse response = postLikeService.getLikeStatus(userId, id);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
