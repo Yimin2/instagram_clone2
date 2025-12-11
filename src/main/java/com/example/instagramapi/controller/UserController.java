@@ -1,11 +1,9 @@
 package com.example.instagramapi.controller;
 
 import com.example.instagramapi.dto.request.ProfileUpdateRequest;
-import com.example.instagramapi.dto.response.ApiResponse;
-import com.example.instagramapi.dto.response.PostResponse;
-import com.example.instagramapi.dto.response.UserProfileResponse;
-import com.example.instagramapi.dto.response.UserResponse;
+import com.example.instagramapi.dto.response.*;
 import com.example.instagramapi.security.CustomUserDetails;
+import com.example.instagramapi.service.FollowerService;
 import com.example.instagramapi.service.PostService;
 import com.example.instagramapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +25,7 @@ public class UserController {
 
     private final UserService userService;
     private final PostService postService;
+    private final FollowerService followerService;
     // TODO: PostService, FollowService 추가 후 주입
 
     @Operation(summary = "프로필 조회")
@@ -57,9 +56,34 @@ public class UserController {
         return ResponseEntity.ok((ApiResponse.success(response)));
     }
 
+    @PostMapping("/{username}/follow")
+    public ResponseEntity<ApiResponse<FollowResponse>> follow(@PathVariable String username,
+                                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+        FollowResponse response = followerService.follow(username, userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @DeleteMapping("/{username}/follow")
+    public ResponseEntity<ApiResponse<FollowResponse>> unfollow(@PathVariable String username,
+                                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
+        FollowResponse response = followerService.unfollow(username, userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     // TODO: 팔로워 목록 조회 API 추가
-    // GET /api/users/{username}/followers
+    // GET /api/users/{username}/follower
+
+    @GetMapping("/{username}/followers")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getFollower(@PathVariable String username) {
+        List<UserResponse> response = followerService.getFollowers(username);
+        return  ResponseEntity.ok(ApiResponse.success(response));
+    }
 
     // TODO: 팔로잉 목록 조회 API 추가
     // GET /api/users/{username}/following
+    @GetMapping("/{username}/following")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getFollowing(@PathVariable String username) {
+        List<UserResponse> response = followerService.getFollowings(username);
+        return  ResponseEntity.ok(ApiResponse.success(response));
+    }
 }
