@@ -1,5 +1,6 @@
 package com.example.instagramapi.controller;
 
+import com.example.instagramapi.dto.request.KakaoLoginRequest;
 import com.example.instagramapi.dto.request.LoginRequest;
 import com.example.instagramapi.dto.request.SignupRequest;
 import com.example.instagramapi.dto.response.ApiResponse;
@@ -46,6 +47,14 @@ public class AuthController {
     public ResponseEntity<ApiResponse<UserResponse>> getMe(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         UserResponse response = authService.getMe(userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @Operation(summary = "카카오 로그인")
+    @PostMapping("/kakao")
+    public ResponseEntity<ApiResponse<TokenResponse>> kakaoLogin(
+            @Valid @RequestBody KakaoLoginRequest request) {
+        TokenResponse response = authService.kakaoLogin(request.getCode());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

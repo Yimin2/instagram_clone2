@@ -26,6 +26,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Slice<Post> findAllWithUserPaging(Pageable pageable);
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user WHERE p.user.id IN :userIds ORDER BY p.createdAt DESC")
-    Slice<Post> findByUserIdsWithUserPaging(@Param("userIds")List<Long> userIds, Pageable pageable);
+    Slice<Post> findByUserIdsWithUserPaging(@Param("userIds") List<Long> userIds, Pageable pageable);
 
 }

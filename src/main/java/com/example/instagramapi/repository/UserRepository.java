@@ -1,5 +1,6 @@
 package com.example.instagramapi.repository;
 
+import com.example.instagramapi.entity.AuthProvider;
 import com.example.instagramapi.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,5 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    Long id(Long id);
+    Optional<User> findByProviderAndProviderId(AuthProvider provider, Long providerId);
 }
