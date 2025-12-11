@@ -6,6 +6,8 @@ import com.example.instagramapi.dto.response.UserResponse;
 import com.example.instagramapi.entity.User;
 import com.example.instagramapi.exception.CustomException;
 import com.example.instagramapi.exception.ErrorCode;
+import com.example.instagramapi.repository.FollowRepository;
+import com.example.instagramapi.repository.PostRepository;
 import com.example.instagramapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,17 +19,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final FollowRepository followRepository;
     // TODO: PostRepository, FollowRepository 추가 후 주입
 
     public UserProfileResponse getProfile(String username, Long currentUserId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // TODO: Post, Follow 기능 구현 후 실제 값으로 변경
-        long postCount = 0;
-        long followerCount = 0;
-        long followingCount = 0;
-        boolean isFollowing = false;
+        long postCount = postRepository.countByUserId(user.getId());
+        long followerCount = followRepository.countByFollowingId(user.getId());
+        long followingCount = followRepository.countByFollowerId(user.getId());
+        boolean isFollowing = currentUserId != null && followRepository.existsByFollowerIdAndFollowingId(currentUserId, user.getId());
 
         return UserProfileResponse.of(user, postCount, followerCount, followingCount, isFollowing);
     }

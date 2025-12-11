@@ -65,5 +65,61 @@ public class DataInitializer implements CommandLineRunner {
                         .user(test)
                         .build()
         );
+        Post post3 = postRepository.save(
+                Post.builder()
+                        .content("sample post2")
+                        .imageUrl("/uploads/sample2.jpg")
+                        .user(test)
+                        .build()
+        );
+        Post post4 = postRepository.save(
+                Post.builder()
+                        .content("sample post2")
+                        .imageUrl("/uploads/sample2.jpg")
+                        .user(test)
+                        .build()
+        );
+        Post post5 = postRepository.save(
+                Post.builder()
+                        .content("sample post2")
+                        .imageUrl("/uploads/sample2.jpg")
+                        .user(test)
+                        .build()
+        );
+        Post post6 = postRepository.save(
+                Post.builder()
+                        .content("sample post2")
+                        .imageUrl("/uploads/sample2.jpg")
+                        .user(test)
+                        .build()
+        );
+        Post post7 = postRepository.save(
+                Post.builder()
+                        .content("sample post2")
+                        .imageUrl("/uploads/sample2.jpg")
+                        .user(test)
+                        .build()
+        );
+        Post post8 = postRepository.save(
+                Post.builder()
+                        .content("sample post2")
+                        .imageUrl("/uploads/sample2.jpg")
+                        .user(test)
+                        .build()
+        );
+        Post post9 = postRepository.save(
+                Post.builder()
+                        .content("sample post2")
+                        .imageUrl("/uploads/sample2.jpg")
+                        .user(test)
+                        .build()
+        );
+        Post post10 = postRepository.save(
+                Post.builder()
+                        .content("sample post2")
+                        .imageUrl("/uploads/sample2.jpg")
+                        .user(test)
+                        .build()
+        );
     }
 }
