@@ -32,8 +32,7 @@ public class UserController {
     @Operation(summary = "프로필 조회")
     @GetMapping("/{username}")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(
-            @Parameter(description = "사용자명")
-            @PathVariable String username,
+            @Parameter(description = "사용자명") @PathVariable String username,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Long currentUserId = userDetails != null ? userDetails.getId() : null;
         UserProfileResponse response = userService.getProfile(username, currentUserId);
@@ -43,10 +42,8 @@ public class UserController {
     @Operation(summary = "프로필 수정")
     @PutMapping("/{username}")
     public ResponseEntity<ApiResponse<UserResponse>> updateProfile(
-            @Parameter(description = "사용자명")
-            @PathVariable String username,
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody ProfileUpdateRequest request) {
+            @Parameter(description = "사용자명") @PathVariable String username,
+            @AuthenticationPrincipal CustomUserDetails userDetails, @Valid @RequestBody ProfileUpdateRequest request) {
         UserResponse response = userService.updateProfile(username, userDetails.getId(), request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -54,8 +51,9 @@ public class UserController {
     // TODO: 사용자 게시물 조회 API 추가
     // GET /api/users/{username}/posts
     @GetMapping("/{username}/posts")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getUserPosts (@PathVariable String username){
-        List<PostResponse> response = postService.findByUsername(username);
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getUserPosts(@PathVariable String username,
+                                                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<PostResponse> response = postService.findByUsername(username, userDetails.getId());
         return ResponseEntity.ok((ApiResponse.success(response)));
     }
 

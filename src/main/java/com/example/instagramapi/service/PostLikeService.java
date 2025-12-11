@@ -22,7 +22,7 @@ public class PostLikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public LikeResponse like(Long userId, Long postId) {
+    public LikeResponse like(Long postId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Post post = postRepository.findById(postId)

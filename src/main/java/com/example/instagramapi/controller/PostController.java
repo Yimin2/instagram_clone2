@@ -45,8 +45,9 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<ApiResponse<PostResponse>> findById(@PathVariable Long id) {
-        PostResponse response = postService.findById(id);
+    private ResponseEntity<ApiResponse<PostResponse>> findById(@PathVariable Long id,
+                                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+        PostResponse response = postService.findById(id, userDetails.getId());
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -93,7 +94,7 @@ public class PostController {
     @DeleteMapping("/{id}/like")
     public ResponseEntity<ApiResponse<LikeResponse>> unlike(@PathVariable Long id,
                                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        LikeResponse response = postLikeService.unlike(userDetails.getId(),id);
+        LikeResponse response = postLikeService.unlike(id, userDetails.getId());
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -102,7 +103,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<LikeResponse>> getLikeStatus(@PathVariable Long id,
                                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails != null ? userDetails.getId() : null;
-        LikeResponse response = postLikeService.getLikeStatus(userId, id);
+        LikeResponse response = postLikeService.getLikeStatus(id, userId);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
